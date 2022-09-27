@@ -1,29 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEditor;
-
-namespace uMVVM.Sources.Infrastructure
+﻿namespace uMVVM.Sources.Infrastructure
 {
     public class BindableProperty<T>
     {
         public delegate void ValueChangedHandler(T oldValue, T newValue);
-
         public ValueChangedHandler OnValueChanged;
 
         private T _value;
         public T Value
         {
-            get
-            {
-                return _value;
-            }
+            get => _value;
             set
             {
                 if (!Equals(_value, value))
                 {
-                    T old = _value;
+                    var old = _value;
                     _value = value;
                     ValueChanged(old, _value);
                 }
@@ -32,10 +22,7 @@ namespace uMVVM.Sources.Infrastructure
 
         private void ValueChanged(T oldValue, T newValue)
         {
-            if (OnValueChanged != null)
-            {
-                OnValueChanged(oldValue, newValue);
-            }
+            OnValueChanged?.Invoke(oldValue, newValue);
         }
 
         public override string ToString()

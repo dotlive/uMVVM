@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Assets.Sources.ViewModels;
+﻿using Assets.Sources.ViewModels;
 using Assets.Sources.Views;
 using uMVVM.Sources.ViewModels;
 using uMVVM.Sources.Views;

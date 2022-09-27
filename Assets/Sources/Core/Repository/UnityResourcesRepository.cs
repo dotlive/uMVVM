@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Assets.Sources.Core.Infrastructure;
 using UnityEngine;
 
@@ -12,6 +11,7 @@ namespace Assets.Sources.Core.Repository
     {
         public string DataDirectory { get; private set; }
         private ISerializer Serializer { get; set; }
+
         public UnityResourcesRepository(string repositoryPath, ISerializer serializer = null)
         {
             DataDirectory = Path.Combine(repositoryPath, typeof(T).Name);
@@ -35,14 +35,14 @@ namespace Assets.Sources.Core.Repository
 
         public IEnumerable<T> Select(Func<T, bool> func)
         {
-            List<T> items = new List<T>();
+            var items = new List<T>();
             try
             {
-                TextAsset[] textAssets = Resources.LoadAll<TextAsset>(DataDirectory);
-                for (int i = 0; i < textAssets.Length; i++)
+                var textAssets = Resources.LoadAll<TextAsset>(DataDirectory);
+                for (var i = 0; i < textAssets.Length; i++)
                 {
-                    TextAsset textAsset = textAssets[i];
-                    T item = Serializer.Deserialize<T>(textAsset.text);
+                    var textAsset = textAssets[i];
+                    var item = Serializer.Deserialize<T>(textAsset.text);
                     items.Add(item);
                 }
             }

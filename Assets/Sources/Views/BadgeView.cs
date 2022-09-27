@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Assets.Sources.Core.Infrastructure;
+﻿using Assets.Sources.Core.Infrastructure;
 using Assets.Sources.Infrastructure;
 using Assets.Sources.ViewModels;
 using uMVVM.Sources.Infrastructure;
@@ -11,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Assets.Sources.Views
 {
-    public class BadgeView:UnityGuiView<BadgeViewModel>
+    public class BadgeView : UnityGuiView<BadgeViewModel>
     {
         public Image iconImage;
         public Image elementColorImage;
@@ -19,8 +15,8 @@ namespace Assets.Sources.Views
         protected override void OnInitialize()
         {
             base.OnInitialize();
-            Binder.Add<string>("Icon",OnIconPropertyValueChanged);
-            Binder.Add<string>("ElementColor",OnElementColorPropertyValueChanged);
+            Binder.Add<string>("Icon", OnIconPropertyValueChanged);
+            Binder.Add<string>("ElementColor", OnElementColorPropertyValueChanged);
         }
 
         private void OnElementColorPropertyValueChanged(string oldvalue, string newvalue)

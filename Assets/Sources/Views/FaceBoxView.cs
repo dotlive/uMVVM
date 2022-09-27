@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Assets.Sources.Infrastructure;
+﻿using Assets.Sources.Infrastructure;
 using Assets.Sources.Models;
 using Assets.Sources.ViewModels;
 using uMVVM.Sources.Infrastructure;
@@ -12,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Assets.Sources.Views
 {
-    public class FaceBoxView:UnityGuiView<FaceBoxViewModel>
+    public class FaceBoxView : UnityGuiView<FaceBoxViewModel>
     {
         public Text nameText;
         public Text levelText;
@@ -25,10 +21,10 @@ namespace Assets.Sources.Views
         {
             base.OnInitialize();
             //初始化Binder
-            Binder.Add<string>("Name",OnNamePropertyVlaueChanged);
-            Binder.Add<int>("Level",OnLevelPropertyValueChanged);
-            Binder.Add<string>("Face",OnFacePropertyValueChanged);
-            Binder.Add<Badge>("Badge",OnBadgePropertyValueChanged);
+            Binder.Add<string>("Name", OnNamePropertyVlaueChanged);
+            Binder.Add<int>("Level", OnLevelPropertyValueChanged);
+            Binder.Add<string>("Face", OnFacePropertyValueChanged);
+            Binder.Add<Badge>("Badge", OnBadgePropertyValueChanged);
             //监听事件
             var beginDragEntry = new EventTrigger.Entry();
             beginDragEntry.eventID = EventTriggerType.BeginDrag;
@@ -53,9 +49,8 @@ namespace Assets.Sources.Views
 
         private void OnBadgePropertyValueChanged(Badge oldValue, Badge newValue)
         {
-            badgeView.BindingContext = new BadgeViewModel() ;
+            badgeView.BindingContext = new BadgeViewModel();
             badgeView.BindingContext.Initialization(newValue);
-
         }
 
         private void OnLevelPropertyValueChanged(int oldValue, int newValue)

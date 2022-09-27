@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Assets.Sources.Core.Message;
 
 namespace Assets.Sources.Infrastructure
 {
-    public delegate void MessageHandler<T>(object sender, MessageArgs<T> args);
     public class MessageAggregator<T>
     {
+        public delegate void MessageHandler<T>(object sender, MessageArgs<T> args);
         private readonly Dictionary<string, MessageHandler<T>> _messages = new Dictionary<string, MessageHandler<T>>();
 
-        public static readonly MessageAggregator<T> Instance=new MessageAggregator<T>();
-       
+        public static readonly MessageAggregator<T> Instance = new MessageAggregator<T>();
+
         private MessageAggregator()
         {
-
         }
        
         public void Subscribe(string name, MessageHandler<T> handler)
@@ -38,8 +34,5 @@ namespace Assets.Sources.Infrastructure
                 _messages[name](sender, args);
             }
         }
-
     }
-
-
 }

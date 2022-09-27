@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Assets.Sources.Models
+﻿namespace Assets.Sources.Models
 {
 	public class Identity
 	{

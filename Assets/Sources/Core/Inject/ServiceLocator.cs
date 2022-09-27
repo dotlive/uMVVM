@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.Sources.Core.Factory;
-using UnityEditor.VersionControl;
 
 namespace Assets.Sources.Core.Inject
 {
     public class ServiceLocator
     {
-        private static SingletonObjectFactory _singletonObjectFactory=new SingletonObjectFactory();
-        private static TransientObjectFactory _transientObjectFactory=new TransientObjectFactory();
-
+        private static readonly SingletonObjectFactory _singletonObjectFactory=new SingletonObjectFactory();
+        private static readonly TransientObjectFactory _transientObjectFactory=new TransientObjectFactory();
         private static readonly Dictionary<Type, Func<object>> Container = new Dictionary<Type, Func<object>>();
+
         /// <summary>
         /// 对每一次请求，只返回唯一的实例
         /// </summary>
@@ -20,6 +19,7 @@ namespace Assets.Sources.Core.Inject
         {
             Container.Add(typeof(TInterface), Lazy<TInstance>(FactoryType.Singleton));
         }
+
         /// <summary>
         /// 对每一次请求，只返回唯一的实例
         /// </summary>
@@ -28,6 +28,7 @@ namespace Assets.Sources.Core.Inject
         {
             Container.Add(typeof(TInstance), Lazy<TInstance>(FactoryType.Singleton));
         }
+
         /// <summary>
         /// 对每一次请求，返回不同的实例
         /// </summary>
@@ -37,6 +38,7 @@ namespace Assets.Sources.Core.Inject
         {
             Container.Add(typeof(TInterface),Lazy<TInstance>(FactoryType.Transient));
         }
+
         /// <summary>
         /// 对每一次请求，返回不同的实例
         /// </summary>
@@ -70,13 +72,8 @@ namespace Assets.Sources.Core.Inject
         /// <returns></returns>
         private static object Resolve(Type type)
         {
-            if (!Container.ContainsKey(type))
-            {
-                return null;
-            }
-            return Container[type]();
-         }
-
+            return !Container.ContainsKey(type) ? null : Container[type]();
+        }
 
         private static Func<object> Lazy<TInstance>(FactoryType factoryType) where TInstance : class, new()
         {
@@ -89,9 +86,7 @@ namespace Assets.Sources.Core.Inject
                     default:
                         return _transientObjectFactory.AcquireObject<TInstance>();
                 }
-                
             };
         }
     }
-
 }

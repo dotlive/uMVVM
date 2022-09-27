@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Assets.Sources.Core.Infrastructure;
 
 namespace Assets.Sources.Core.Factory
 {
+    /// <summary>
+    /// 池对象
+    /// </summary>
     public class PoolObjectFactory : IObjectFactory
     {
         /// <summary>
@@ -34,9 +36,8 @@ namespace Assets.Sources.Core.Factory
         {
             lock (_pool)
             {
-                for (var i = 0; i < _pool.Count; i++)
+                foreach (var p in _pool)
                 {
-                    var p = _pool[i];
                     if (p.Obj == obj)
                     {
                         return p;
@@ -45,6 +46,7 @@ namespace Assets.Sources.Core.Factory
             }
             return null;
         }
+
         /// <summary>
         /// 获取对象池中的真正对象
         /// </summary>
@@ -58,13 +60,12 @@ namespace Assets.Sources.Core.Factory
                 {
                     if (_pool[0].Obj.GetType() != type)
                     {
-                        throw new Exception(string.Format("the Pool Factory only for Type :{0}", _pool[0].Obj.GetType().Name));
+                        throw new Exception($"the Pool Factory only for Type :{_pool[0].Obj.GetType().Name}");
                     }
                 }
 
-                for (var i = 0; i < _pool.Count; i++)
+                foreach (var p in _pool)
                 {
-                    var p = _pool[i];
                     if (!p.InUse)
                     {
                         p.InUse = true;
@@ -72,13 +73,12 @@ namespace Assets.Sources.Core.Factory
                     }
                 }
 
-
                 if (_pool.Count >= _max && _limit)
                 {
                     throw new Exception("max limit is arrived.");
                 }
 
-                object obj = Activator.CreateInstance(type, false);
+                var obj = Activator.CreateInstance(type, false);
                 var p1 = new PoolData
                 {
                     InUse = true,
@@ -87,7 +87,7 @@ namespace Assets.Sources.Core.Factory
                 _pool.Add(p1);
                 return obj;
             }
-         }
+        }
 
         private void PutObject(object obj)
         {
@@ -107,17 +107,19 @@ namespace Assets.Sources.Core.Factory
         {
             return AcquireObject(TypeFinder.ResolveType(className));
         }
+
         public object AcquireObject<TInstance>() where TInstance : class, new()
         {
             return AcquireObject(typeof(TInstance));
         }
+
         public void ReleaseObject(object obj)
         {
             if (_pool.Count > _max)
             {
-                if (obj is IDisposable)
+                if (obj is IDisposable disposable)
                 {
-                    ((IDisposable)obj).Dispose();
+                    disposable.Dispose();
                 }
                 var p = GetPoolData(obj);
                 lock (_pool)

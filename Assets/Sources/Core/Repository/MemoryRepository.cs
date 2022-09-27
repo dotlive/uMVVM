@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Assets.Sources.Core.Repository
 {
@@ -46,9 +44,9 @@ namespace Assets.Sources.Core.Repository
 
         private void FindKeyPropertyInDataType()
         {
-            foreach (PropertyInfo propertyInfo in typeof(T).GetProperties())
+            foreach (var propertyInfo in typeof(T).GetProperties())
             {
-                object[] attributes = propertyInfo.GetCustomAttributes(typeof(RepositoryKey), false);
+                var attributes = propertyInfo.GetCustomAttributes(typeof(RepositoryKey), false);
                 if (attributes != null && attributes.Length == 1)
                 {
                     KeyPropertyInfo = propertyInfo;
@@ -58,7 +56,6 @@ namespace Assets.Sources.Core.Repository
                     throw new Exception("more than one repository key exist");
                 }
             }
-           
         }
     }
 }

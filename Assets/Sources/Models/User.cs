@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Assets.Sources.Core.Repository;
+﻿using System.Collections.Generic;
 
 namespace Assets.Sources.Models
 {

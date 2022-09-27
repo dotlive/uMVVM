@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Assets.Sources.Core.Log
 {
-    public class ConsoleContentWriter:IContentWriter
+    public class ConsoleContentWriter : IContentWriter
     {
         public void Write(string message)
         {

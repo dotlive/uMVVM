@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Assets.Sources.Core.Infrastructure;
 using Assets.Sources.Core.Network;
-using Assets.Sources.Models;
 using UnityEngine;
 
 namespace Assets.Sources.Core.Repository
@@ -16,6 +14,7 @@ namespace Assets.Sources.Core.Repository
         {
             Serializer = serializer ?? SerializerJson.Instance;
         }
+
         public void Get<R>(string url, T instance, Action<R> onSuccess) where R : class, new()
         {
             var parameters= HttpUtility.BuildParameters(instance, new StringBuilder("?"));

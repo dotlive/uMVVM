@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using UnityEngine;
@@ -11,6 +9,8 @@ namespace Assets.Sources.Core.Infrastructure
 {
     public class SerializerXml : ISerializer
     {
+        private static readonly List<Type> ExtraTypes = new List<Type>();
+
         public static readonly SerializerXml Instance = new SerializerXml();
 
         private readonly XmlWriterSettings _settingsForCompactOutput = new XmlWriterSettings()
@@ -27,20 +27,18 @@ namespace Assets.Sources.Core.Infrastructure
             NewLineHandling = NewLineHandling.Replace
         };
 
-        public static readonly List<Type> ExtraTypes = new List<Type>();
-
         public string Serialize<T>(T obj, bool readableOutput = false) where T : class, new()
         {
             try
             {
                 var xmlSerializer = new XmlSerializer(obj.GetType(), ExtraTypes.ToArray());
-                using (StringWriter writer = new StringWriter())
+                using (var writer = new StringWriter())
                 {
-                    XmlWriterSettings settings = (readableOutput ? _settingsForReadableOutput : _settingsForCompactOutput);
-                    using (XmlWriter xmlWriter = XmlWriter.Create(writer, settings))
+                    var settings = (readableOutput ? _settingsForReadableOutput : _settingsForCompactOutput);
+                    using (var xmlWriter = XmlWriter.Create(writer, settings))
                     {
                         xmlSerializer.Serialize(xmlWriter, obj);
-                        string xml = writer.ToString();
+                        var xml = writer.ToString();
                         return xml;
                     }
                 }
@@ -59,7 +57,7 @@ namespace Assets.Sources.Core.Infrastructure
                 var xmlSerializer = new XmlSerializer(typeof(T));
                 using (TextReader reader = new StringReader(xml))
                 {
-                    T obj = (T)xmlSerializer.Deserialize(reader);
+                    var obj = (T)xmlSerializer.Deserialize(reader);
                     return obj;
                 }
             }

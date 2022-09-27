@@ -12,7 +12,8 @@ namespace Assets.Sources.ViewModels
         public readonly ObservableList<FaceBox> Members = new ObservableList<FaceBox>();
 
         #region 数据源
-        public List<FaceBox> DataSource = new List<FaceBox>
+
+        private readonly List<FaceBox> DataSource = new List<FaceBox>
         {
             new FaceBox
             {
@@ -42,7 +43,8 @@ namespace Assets.Sources.ViewModels
                 Face = "Avatar204_Face",
                 Badge = new Badge {Icon = "Icon_WeaponGun", ElementColor = "591E9FFF"}
             }
-        }; 
+        };
+
         #endregion
 
         public override void OnStartReveal()
@@ -51,7 +53,6 @@ namespace Assets.Sources.ViewModels
             Initialization();
         }
 
-
         public void Initialization()
         {
             Members.Value = DataSource.ToList();
@@ -59,7 +60,7 @@ namespace Assets.Sources.ViewModels
 
         public void AddMember()
         {
-            if (Members.Count<4)
+            if (Members.Count < 4)
             {
                 var result = DataSource.OrderBy(o => Guid.NewGuid()).First();
                 Members.Add(result);
@@ -68,7 +69,7 @@ namespace Assets.Sources.ViewModels
 
         public void RemoveMember()
         {
-            if (Members.Count>0)
+            if (Members.Count > 0)
             {
                 Members.Remove(Members[0]);
             }

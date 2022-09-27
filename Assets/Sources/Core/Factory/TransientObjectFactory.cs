@@ -3,6 +3,9 @@ using Assets.Sources.Core.Infrastructure;
 
 namespace Assets.Sources.Core.Factory
 {
+    /// <summary>
+    /// 临时对象
+    /// </summary>
     public class TransientObjectFactory : IObjectFactory
     {
         public object AcquireObject(string className)
@@ -24,7 +27,6 @@ namespace Assets.Sources.Core.Factory
 
         public void ReleaseObject(object obj)
         {
-           
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace Assets.Sources.Core.Infrastructure
 {
@@ -15,12 +13,13 @@ namespace Assets.Sources.Core.Infrastructure
         /// <returns></returns>
         public static Type ResolveType(string className)
         {
-            Assembly assembly=Assembly.GetExecutingAssembly();
-            Type type = assembly.GetTypes().FirstOrDefault(t => t.Name == className);
-            if (type==null)
+            var assembly = Assembly.GetExecutingAssembly();
+            var type = assembly.GetTypes().FirstOrDefault(t => t.Name == className);
+            if (type == null)
             {
-                throw new Exception(string.Format("Cant't find Class by class name:'{0}'",className));
+                throw new Exception($"Can't find Class by class name:'{className}'");
             }
+
             return type;
         }
     }

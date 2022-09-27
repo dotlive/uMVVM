@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using Assets.Sources.Core.Log;
-using UnityEngine;
 
 namespace Assets.Sources.Core.Proxy
 {
-    public class LogInvocationHandler:IInvocationHandler
+    public class LogInvocationHandler : IInvocationHandler
     {
         public void PreProcess()
         {
@@ -18,7 +13,7 @@ namespace Assets.Sources.Core.Proxy
         public object Invoke(object target, MethodInfo method, object[] args)
         {
             PreProcess();
-            var result= method.Invoke(target, args);
+            var result = method.Invoke(target, args);
             PostProcess();
             return result;
         }

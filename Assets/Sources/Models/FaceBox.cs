@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Assets.Sources.Models
+﻿namespace Assets.Sources.Models
 {
     public class FaceBox
     {

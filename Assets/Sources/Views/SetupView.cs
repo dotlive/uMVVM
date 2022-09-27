@@ -1,14 +1,12 @@
-﻿
-using uMVVM.Sources.Infrastructure;
+﻿using uMVVM.Sources.Infrastructure;
 using uMVVM.Sources.Models;
 using uMVVM.Sources.ViewModels;
 using UnityEngine.UI;
 
 namespace uMVVM.Sources.Views
 {
-    public class SetupView:UnityGuiView<SetupViewModel>
+    public class SetupView : UnityGuiView<SetupViewModel>
     {
-
         public InputField nameInputField;
         public Text nameMessageText;
 
@@ -24,19 +22,17 @@ namespace uMVVM.Sources.Views
         public Toggle joinToggle;
         public Button joinInButton;
         public Button waitButton;
-        public SetupViewModel ViewModel { get { return (SetupViewModel)BindingContext; } }
+        private SetupViewModel ViewModel => BindingContext;
 
         protected override void OnInitialize()
         {
             base.OnInitialize();
             Binder.Add<string>("Name", OnNamePropertyValueChanged);
-            Binder.Add<string>("Job",OnJobPropertyValueChanged);
-            Binder.Add<int>("ATK",OnATKPropertyValueChanged);
-            Binder.Add<float>("SuccessRate",OnSuccessRatePropertyValueChanged);
-            Binder.Add<State>("State",OnStatePropertyValueChanged);
-
+            Binder.Add<string>("Job", OnJobPropertyValueChanged);
+            Binder.Add<int>("ATK", OnATKPropertyValueChanged);
+            Binder.Add<float>("SuccessRate", OnSuccessRatePropertyValueChanged);
+            Binder.Add<State>("State", OnStatePropertyValueChanged);
         }
-
 
         private void OnSuccessRatePropertyValueChanged(float oldValue, float newValue)
         {
@@ -57,6 +53,7 @@ namespace uMVVM.Sources.Views
         {
             nameMessageText.text = newValue.ToString();
         }
+
         private void OnStatePropertyValueChanged(State oldValue, State newValue)
         {
             switch (newValue)
@@ -85,7 +82,7 @@ namespace uMVVM.Sources.Views
         public void iptATK_ValueChanged()
         {
             int result;
-            if (int.TryParse(atkInputField.text,out result))
+            if (int.TryParse(atkInputField.text, out result))
             {
                 ViewModel.ATK.Value = int.Parse(atkInputField.text);
             }
@@ -110,12 +107,12 @@ namespace uMVVM.Sources.Views
 
         public void JoinInBattleTeam()
         {
-            ViewModel.JoininCurrentTeam();
+            ViewModel.JoinInCurrentTeam();
         }
 
         public void JoinInClan()
         {
-            ViewModel.JoininClan();
+            ViewModel.JoinInClan();
         }
     }
 }

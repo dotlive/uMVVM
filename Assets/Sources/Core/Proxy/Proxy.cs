@@ -2,7 +2,7 @@
 {
     public class Proxy
     {
-        public static Proxy Instance = new Proxy();
+        public static readonly Proxy Instance = new Proxy();
 
         private IInvocationHandler _invocationHandler;
         private object _target;

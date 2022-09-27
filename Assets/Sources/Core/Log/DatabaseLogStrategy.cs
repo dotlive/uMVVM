@@ -6,6 +6,7 @@
         {
             SetContentWriter();
         }
+
         protected sealed override void SetContentWriter()
         {
             Writer = new DatabaseContentWriter();

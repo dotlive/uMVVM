@@ -17,7 +17,7 @@ namespace Assets.Sources.Infrastructure
             //立刻显示
             clanView.Reveal();
 
-            PoolObjectFactory poolObjectFactory=new PoolObjectFactory(5,true);
+            var poolObjectFactory=new PoolObjectFactory(5,true);
 
             poolObjectFactory.AcquireObject(typeof(UserRepository));
             poolObjectFactory.AcquireObject(typeof(UserRepository));

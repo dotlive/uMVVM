@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Assets.Sources.Core.DataBinding
 {
-    public class ObservableList<T>:IList<T>
+    public class ObservableList<T> : IList<T>
     {
-
-        public delegate void ValueChangedHandler(List<T> oldValue, List<T> newValue);        public ValueChangedHandler OnValueChanged;
+        public delegate void ValueChangedHandler(List<T> oldValue, List<T> newValue);
+        public ValueChangedHandler OnValueChanged;
 
         public delegate void AddHandler(T instance);
         public AddHandler OnAdd;
@@ -21,7 +18,36 @@ namespace Assets.Sources.Core.DataBinding
         public RemoveHandler OnRemove;
        
         //预先初始化，防止空异常
-        private List<T> _value=new List<T>();        public List<T> Value        {            get { return _value; }            set            {                if (!Equals(_value, value))                {                    var old = _value;                    _value = value;                    ValueChanged(old, _value);                }            }        }        private void ValueChanged(List<T> oldValue, List<T> newValue)        {            if (OnValueChanged != null)            {                OnValueChanged(oldValue, newValue);            }        }
+        private List<T> _value = new List<T>();
+        public List<T> Value
+        {
+            get => _value;
+            set
+            {
+                if (!Equals(_value, value))
+                {
+                    var old = _value;
+                    _value = value;
+
+                    ValueChanged(old, _value);
+                }
+            }
+        }
+
+        public int Count => _value.Count;
+
+        public bool IsReadOnly { get; private set; }
+
+        public T this[int index]
+        {
+            get => _value[index];
+            set => _value[index] = value;
+        }
+
+        private void ValueChanged(List<T> oldValue, List<T> newValue)
+        {
+            OnValueChanged?.Invoke(oldValue, newValue);
+        }
 
         public IEnumerator<T> GetEnumerator()
         {
@@ -36,10 +62,7 @@ namespace Assets.Sources.Core.DataBinding
         public void Add(T item)
         {
             _value.Add(item);
-            if (OnAdd != null)
-            {
-                OnAdd(item);
-            }
+            OnAdd?.Invoke(item);
         }
 
         public void Clear()
@@ -61,21 +84,12 @@ namespace Assets.Sources.Core.DataBinding
         {
             if (_value.Remove(item))
             {
-                if (OnRemove != null)
-                {
-                    OnRemove(item);
-                }
+                OnRemove?.Invoke(item);
                 return true;
             }
             return false;
         }
 
-        public int Count
-        {
-            get { return _value.Count; } 
-        }
-
-        public bool IsReadOnly { get; private set; }
         public int IndexOf(T item)
         {
             return _value.IndexOf(item);
@@ -84,21 +98,12 @@ namespace Assets.Sources.Core.DataBinding
         public void Insert(int index, T item)
         {
             _value.Insert(index,item);
-            if (OnInsert!=null)
-            {
-                OnInsert(index, item);
-            }
+            OnInsert?.Invoke(index, item);
         }
 
         public void RemoveAt(int index)
         {
            _value.RemoveAt(index);
-        }
-
-        public T this[int index]
-        {
-            get { return _value[index]; }
-            set { _value[index] = value; }
         }
     }
 }

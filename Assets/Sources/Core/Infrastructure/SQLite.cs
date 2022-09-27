@@ -234,7 +234,7 @@ namespace SQLite4Unity3d
             Handle = handle;
             if (r != SQLite3.Result.OK)
             {
-                throw SQLiteException.New(r, String.Format("Could not open database file: {0} ({1})", DatabasePath, r));
+                throw SQLiteException.New(r, $"Could not open database file: {DatabasePath} ({r})");
             }
             _open = true;
 
@@ -268,10 +268,10 @@ namespace SQLite4Unity3d
 
         public void EnableLoadExtension(int onoff)
         {
-            SQLite3.Result r = SQLite3.EnableLoadExtension(Handle, onoff);
+            var r = SQLite3.EnableLoadExtension(Handle, onoff);
             if (r != SQLite3.Result.OK)
             {
-                string msg = SQLite3.GetErrmsg(Handle);
+                var msg = SQLite3.GetErrmsg(Handle);
                 throw SQLiteException.New(r, msg);
             }
         }
@@ -382,7 +382,7 @@ namespace SQLite4Unity3d
         {
             var map = GetMapping(typeof(T));
 
-            var query = string.Format("drop table if exists \"{0}\"", map.TableName);
+            var query = $"drop table if exists \"{map.TableName}\"";
 
             return Execute(query);
         }
@@ -472,7 +472,7 @@ namespace SQLite4Unity3d
             foreach (var indexName in indexes.Keys)
             {
                 var index = indexes[indexName];
-                string[] columnNames = new string[index.Columns.Count];
+                var columnNames = new string[index.Columns.Count];
                 if (index.Columns.Count == 1)
                 {
                     columnNames[0] = index.Columns[0].ColumnName;
@@ -702,7 +702,8 @@ namespace SQLite4Unity3d
             {
                 _sw.Stop();
                 _elapsedMilliseconds += _sw.ElapsedMilliseconds;
-                Debug.WriteLine(string.Format("Finished in {0} ms ({1:0.0} s total)", _sw.ElapsedMilliseconds, _elapsedMilliseconds / 1000.0));
+                Debug.WriteLine(
+                    $"Finished in {_sw.ElapsedMilliseconds} ms ({_elapsedMilliseconds / 1000.0:0.0} s total)");
             }
 
             return r;
@@ -728,7 +729,8 @@ namespace SQLite4Unity3d
             {
                 _sw.Stop();
                 _elapsedMilliseconds += _sw.ElapsedMilliseconds;
-                Debug.WriteLine(string.Format("Finished in {0} ms ({1:0.0} s total)", _sw.ElapsedMilliseconds, _elapsedMilliseconds / 1000.0));
+                Debug.WriteLine(
+                    $"Finished in {_sw.ElapsedMilliseconds} ms ({_elapsedMilliseconds / 1000.0:0.0} s total)");
             }
 
             return r;
@@ -1005,8 +1007,8 @@ namespace SQLite4Unity3d
         /// <returns>A string naming the savepoint.</returns>
         public string SaveTransactionPoint()
         {
-            int depth = Interlocked.Increment(ref _transactionDepth) - 1;
-            string retVal = "S" + _rand.Next(short.MaxValue) + "D" + depth;
+            var depth = Interlocked.Increment(ref _transactionDepth) - 1;
+            var retVal = "S" + _rand.Next(short.MaxValue) + "D" + depth;
 
             try
             {
@@ -1106,7 +1108,7 @@ namespace SQLite4Unity3d
         void DoSavePointExecute(string savepoint, string cmd)
         {
             // Validate the savepoint
-            int firstLen = savepoint.IndexOf('D');
+            var firstLen = savepoint.IndexOf('D');
             if (firstLen >= 2 && savepoint.Length > firstLen + 1)
             {
                 int depth;
@@ -1490,7 +1492,7 @@ namespace SQLite4Unity3d
         /// </returns>
         public int Update(object obj, Type objType)
         {
-            int rowsAffected = 0;
+            var rowsAffected = 0;
             if (obj == null || objType == null)
             {
                 return 0;
@@ -1512,8 +1514,8 @@ namespace SQLite4Unity3d
                        select c.GetValue(obj);
             var ps = new List<object>(vals);
             ps.Add(pk.GetValue(obj));
-            var q = string.Format("update \"{0}\" set {1} where {2} = ? ", map.TableName, string.Join(",", (from c in cols
-                                                                                                            select "\"" + c.Name + "\" = ? ").ToArray()), pk.Name);
+            var q =
+                $"update \"{map.TableName}\" set {string.Join(",", (from c in cols select "\"" + c.Name + "\" = ? ").ToArray())} where {pk.Name} = ? ";
 
             try
             {
@@ -1571,7 +1573,7 @@ namespace SQLite4Unity3d
             {
                 throw new NotSupportedException("Cannot delete " + map.TableName + ": it has no PK");
             }
-            var q = string.Format("delete from \"{0}\" where \"{1}\" = ?", map.TableName, pk.Name);
+            var q = $"delete from \"{map.TableName}\" where \"{pk.Name}\" = ?";
             return Execute(q, pk.GetValue(objectToDelete));
         }
 
@@ -1595,7 +1597,7 @@ namespace SQLite4Unity3d
             {
                 throw new NotSupportedException("Cannot delete " + map.TableName + ": it has no PK");
             }
-            var q = string.Format("delete from \"{0}\" where \"{1}\" = ?", map.TableName, pk.Name);
+            var q = $"delete from \"{map.TableName}\" where \"{pk.Name}\" = ?";
             return Execute(q, primaryKey);
         }
 
@@ -1613,7 +1615,7 @@ namespace SQLite4Unity3d
         public int DeleteAll<T>()
         {
             var map = GetMapping(typeof(T));
-            var query = string.Format("delete from \"{0}\"", map.TableName);
+            var query = $"delete from \"{map.TableName}\"";
             return Execute(query);
         }
 
@@ -1649,7 +1651,7 @@ namespace SQLite4Unity3d
                     var r = SQLite3.Close(Handle);
                     if (r != SQLite3.Result.OK)
                     {
-                        string msg = SQLite3.GetErrmsg(Handle);
+                        var msg = SQLite3.GetErrmsg(Handle);
                         throw SQLiteException.New(r, msg);
                     }
                 }
@@ -1846,12 +1848,12 @@ namespace SQLite4Unity3d
 
             if (PK != null)
             {
-                GetByPrimaryKeySql = string.Format("select * from \"{0}\" where \"{1}\" = ?", TableName, PK.Name);
+                GetByPrimaryKeySql = $"select * from \"{TableName}\" where \"{PK.Name}\" = ?";
             }
             else
             {
                 // People should not be calling Get/Find without a PK
-                GetByPrimaryKeySql = string.Format("select * from \"{0}\" limit 1", TableName);
+                GetByPrimaryKeySql = $"select * from \"{TableName}\" limit 1";
             }
         }
 
@@ -2033,7 +2035,7 @@ namespace SQLite4Unity3d
 
         public static string SqlDecl(TableMapping.Column p, bool storeDateTimeAsTicks)
         {
-            string decl = "\"" + p.Name + "\" " + SqlType(p, storeDateTimeAsTicks) + " ";
+            var decl = "\"" + p.Name + "\" " + SqlType(p, storeDateTimeAsTicks) + " ";
 
             if (p.IsPK)
             {
@@ -2072,7 +2074,7 @@ namespace SQLite4Unity3d
             }
             else if (clrType == typeof(String))
             {
-                int? len = p.MaxStringLength;
+                var len = p.MaxStringLength;
 
                 if (len.HasValue)
                     return "varchar(" + len.Value + ")";
@@ -2213,12 +2215,12 @@ namespace SQLite4Unity3d
 
             if (r == SQLite3.Result.Done)
             {
-                int rowsAffected = SQLite3.Changes(_conn.Handle);
+                var rowsAffected = SQLite3.Changes(_conn.Handle);
                 return rowsAffected;
             }
             else if (r == SQLite3.Result.Error)
             {
-                string msg = SQLite3.GetErrmsg(_conn.Handle);
+                var msg = SQLite3.GetErrmsg(_conn.Handle);
                 throw SQLiteException.New(r, msg);
             }
             else if (r == SQLite3.Result.Constraint)
@@ -2278,7 +2280,7 @@ namespace SQLite4Unity3d
                 {
                     var cols = new TableMapping.Column[SQLite3.ColumnCount(stmt)];
 
-                    for (int i = 0; i < cols.Length; i++)
+                    for (var i = 0; i < cols.Length; i++)
                     {
                         var name = SQLite3.ColumnName16(stmt, i);
                         cols[i] = map.FindColumn(name);
@@ -2287,7 +2289,7 @@ namespace SQLite4Unity3d
                     while (SQLite3.Step(stmt) == SQLite3.Result.Row)
                     {
                         var obj = Activator.CreateInstance(map.MappedType);
-                        for (int i = 0; i < cols.Length; i++)
+                        for (var i = 0; i < cols.Length; i++)
                         {
                             if (cols[i] == null)
                                 continue;
@@ -2313,7 +2315,7 @@ namespace SQLite4Unity3d
                 _conn.InvokeTrace("Executing Query: " + this);
             }
 
-            T val = default(T);
+            var val = default(T);
 
             lock (_conn.SyncObject)
             {
@@ -2365,7 +2367,7 @@ namespace SQLite4Unity3d
             var i = 1;
             foreach (var b in _bindings)
             {
-                parts[i] = string.Format("  {0}: {1}", i - 1, b.Value);
+                parts[i] = $"  {i - 1}: {b.Value}";
                 i++;
             }
             return string.Join(Environment.NewLine, parts);
@@ -2385,7 +2387,7 @@ namespace SQLite4Unity3d
 
         void BindAll(Sqlite3Statement stmt)
         {
-            int nextIdx = 1;
+            var nextIdx = 1;
             foreach (var b in _bindings)
             {
                 if (b.Name != null)
@@ -2624,7 +2626,7 @@ namespace SQLite4Unity3d
             //bind the values.
             if (source != null)
             {
-                for (int i = 0; i < source.Length; i++)
+                for (var i = 0; i < source.Length; i++)
                 {
                     SQLiteCommand.BindParameter(Statement, i + 1, source[i], Connection.StoreDateTimeAsTicks);
                 }
@@ -2633,13 +2635,13 @@ namespace SQLite4Unity3d
 
             if (r == SQLite3.Result.Done)
             {
-                int rowsAffected = SQLite3.Changes(Connection.Handle);
+                var rowsAffected = SQLite3.Changes(Connection.Handle);
                 SQLite3.Reset(Statement);
                 return rowsAffected;
             }
             else if (r == SQLite3.Result.Error)
             {
-                string msg = SQLite3.GetErrmsg(Connection.Handle);
+                var msg = SQLite3.GetErrmsg(Connection.Handle);
                 SQLite3.Reset(Statement);
                 throw SQLiteException.New(r, msg);
             }
@@ -3143,7 +3145,7 @@ namespace SQLite4Unity3d
 
         static object ConvertTo(object obj, Type t)
         {
-            Type nut = Nullable.GetUnderlyingType(t);
+            var nut = Nullable.GetUnderlyingType(t);
 
             if (nut != null)
             {
@@ -3493,7 +3495,7 @@ namespace SQLite4Unity3d
 
         public static byte[] ColumnByteArray(IntPtr stmt, int index)
         {
-            int length = ColumnBytes(stmt, index);
+            var length = ColumnBytes(stmt, index);
             var result = new byte[length];
             if (length > 0)
                 Marshal.Copy(ColumnBlob(stmt, index), result, 0, length);

@@ -6,20 +6,20 @@ namespace Assets.Sources.Core.Log
 {
     public abstract class LogStrategy
     {
-        private readonly StringBuilder _messageBuilder=new StringBuilder();
+        private readonly StringBuilder _messageBuilder = new StringBuilder();
         protected IContentWriter Writer { get; set; }
 
         /// <summary>
-        ///     模板方法
+        /// 模板方法
         /// </summary>
         protected abstract void RecordMessage(string message);
 
         protected abstract void SetContentWriter();
 
         /// <summary>
-        ///     公共的API
+        /// 公共的API
         /// </summary>
-        public void Log(string message,bool verbose=false)
+        public void Log(string message, bool verbose = false)
         {
             if (verbose)
             {
@@ -29,31 +29,31 @@ namespace Assets.Sources.Core.Log
                 RecordDeviceName();
                 RecordOperatingSystem();
             }
+
             //抽象方法，交由子类实现
-            RecordMessage(_messageBuilder.AppendLine(string.Format("Message:{0}", message)).ToString());
+            RecordMessage(_messageBuilder.AppendLine($"Message:{message}").ToString());
         }
 
         private void RecordDateTime()
         {
-            _messageBuilder.AppendLine(string.Format("DateTime:{0}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
+            _messageBuilder.AppendLine($"DateTime:{DateTime.Now:yyyy-MM-dd HH:mm:ss}");
         }
 
         private void RecordDeviceModel()
         {
-            _messageBuilder.AppendLine(string.Format("Device Model:{0}",SystemInfo.deviceModel));
+            _messageBuilder.AppendLine($"Device Model:{SystemInfo.deviceModel}");
         }
 
         private void RecordDeviceName()
         {
-            _messageBuilder.AppendLine(string.Format("Device Name:{0}", SystemInfo.deviceName));
+            _messageBuilder.AppendLine($"Device Name:{SystemInfo.deviceName}");
         }
 
         private void RecordOperatingSystem()
         {
             _messageBuilder
-                .AppendLine(string.Format("Operating System:{0}", SystemInfo.operatingSystem))
+                .AppendLine($"Operating System:{SystemInfo.operatingSystem}")
                 .AppendLine();
         }
-
     }
 }

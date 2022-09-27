@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace uMVVM.Sources.Infrastructure
 {
     public class ViewModelBase
     {
         private bool _isInitialized;
+
         public ViewModelBase ParentViewModel { get; set; }
         public bool IsRevealed { get; private set; }
         public bool IsRevealInProgress { get; private set; }
@@ -15,13 +13,12 @@ namespace uMVVM.Sources.Infrastructure
 
         protected virtual void OnInitialize()
         {
-            
         }
 
         public virtual void OnStartReveal()
         {
             IsRevealInProgress = true;
-            //在开始显示的时候进行初始化操作
+            // 在开始显示的时候进行初始化操作
             if (!_isInitialized)
             {
                 OnInitialize();
@@ -38,7 +35,6 @@ namespace uMVVM.Sources.Infrastructure
         public virtual void OnStartHide()
         {
             IsHideInProgress = true;
-
         }
 
         public virtual void OnFinishHide()
@@ -47,10 +43,21 @@ namespace uMVVM.Sources.Infrastructure
             IsRevealed = false;
         }
 
-        public virtual void OnDestory()
+        public virtual void OnDestroy()
         {
-            
         }
 
+        public IEnumerable<T> Ancestors<T>() where T : ViewModelBase
+        {
+            var parentViewModel = ParentViewModel;
+            while (parentViewModel != null)
+            {
+                if (parentViewModel is T castedViewModel)
+                {
+                    yield return castedViewModel;
+                }
+                parentViewModel = parentViewModel.ParentViewModel;
+            }
+        }
     }
 }

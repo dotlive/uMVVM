@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
-namespace Assets.Sources.Core.Infrastructure
+namespace Assets.Sources.Core.Network
 {
     public class HttpUtility
     {
-        public static string BuildParameters<T>(T instance, StringBuilder sb) where T:class,new()
+        public static string BuildParameters<T>(T instance, StringBuilder sb) where T : class, new()
         {
             foreach (var property in instance.GetType().GetProperties())
             {

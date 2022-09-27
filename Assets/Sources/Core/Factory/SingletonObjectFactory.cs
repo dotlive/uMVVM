@@ -1,33 +1,31 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Assets.Sources.Core.Infrastructure;
 
 namespace Assets.Sources.Core.Factory
 {
-    public class SingletonObjectFactory:IObjectFactory
+    /// <summary>
+    /// 单例对象
+    /// </summary>
+    public class SingletonObjectFactory : IObjectFactory
     {
         /// <summary>
         /// 共享的字典，不会因为不同的SingletonObjectFactory对象返回不唯一的实例对象
         /// </summary>
-        private static Dictionary<Type,object> _cachedObjects = null;
-        private static readonly object _lock=new object();
-        private Dictionary<Type, object> CachedObjects
+        private static Dictionary<Type,object> _cachedObjects;
+        private static readonly object _lock = new object();
+
+        private static Dictionary<Type, object> CachedObjects
         {
             get
             {
                 lock (_lock)
                 {
-                    if (_cachedObjects==null)
-                    {
-                        _cachedObjects=new Dictionary<Type, object>();
-                    }
-                    return _cachedObjects;
+                    return _cachedObjects ??= new Dictionary<Type, object>();
                 }
             }
         }
+
         public object AcquireObject(string className)
         {
             return AcquireObject(TypeFinder.ResolveType(className));
@@ -39,20 +37,22 @@ namespace Assets.Sources.Core.Factory
             {
                 return CachedObjects[type];
             }
+
             lock (_lock)
             {
-                CachedObjects.Add(type,Activator.CreateInstance(type,false));
+                CachedObjects.Add(type, Activator.CreateInstance(type,false));
                 return CachedObjects[type];
             }
         }
 
-        public object AcquireObject<TInstance>() where TInstance:class,new()
+        public object AcquireObject<TInstance>() where TInstance : class, new()
         {
             var type = typeof(TInstance);
             if (CachedObjects.ContainsKey(type))
             {
                 return CachedObjects[type];
             }
+
             lock (_lock)
             {
                 var instance=new TInstance();
@@ -63,7 +63,6 @@ namespace Assets.Sources.Core.Factory
 
         public void ReleaseObject(object obj)
         {
-          
         }
     }
 }
